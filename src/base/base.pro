@@ -12,9 +12,14 @@ CONFIG += staticlib
 
 INCLUDEPATH += /opt/local/include
 
-SOURCES +=
+SOURCES += \
+    detail_tcp_connection.cpp \
+    detail_tcp_acceptor.cpp
 
-HEADERS +=
+HEADERS += \
+    detail_tcp_connection.hpp \
+    detail_tcp_acceptor.hpp \
+    detail_raw_buffer.hpp
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib
@@ -23,5 +28,22 @@ unix:!symbian {
     }
     INSTALLS += target
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
