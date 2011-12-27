@@ -47,3 +47,6 @@ DEPENDPATH += $$PWD/../base
 win32:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../base/release/base.lib
 else:win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../base/debug/base.lib
 else:unix:!symbian: PRE_TARGETDEPS += $$OUT_PWD/../base/libbase.a
+
+HEADERS += \
+    tcp_test.hpp

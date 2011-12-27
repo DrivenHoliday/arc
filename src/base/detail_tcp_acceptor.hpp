@@ -30,6 +30,11 @@ public:
                                            boost::asio::placeholders::error,handler));
     }
 
+    void close()
+    {
+        m_acceptor.close();
+    }
+
 private:
     void handle_accept(tcp_connection::pointer new_connection,
                        const boost::system::error_code& error,

@@ -96,6 +96,11 @@ public:
                                             header));
     }
 
+    void close()
+    {
+        m_socket.close();
+    }
+
     friend class tcp_acceptor;
 
 private:
