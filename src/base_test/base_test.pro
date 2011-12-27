@@ -49,4 +49,5 @@ else:win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../base/deb
 else:unix:!symbian: PRE_TARGETDEPS += $$OUT_PWD/../base/libbase.a
 
 HEADERS += \
-    tcp_test.hpp
+    tcp_test.hpp \
+    serialization_test.hpp

@@ -19,7 +19,8 @@ SOURCES += \
 HEADERS += \
     detail_tcp_connection.hpp \
     detail_tcp_acceptor.hpp \
-    detail_raw_buffer.hpp
+    detail_raw_buffer.hpp \
+    detail_generic_serialization.hpp
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib
