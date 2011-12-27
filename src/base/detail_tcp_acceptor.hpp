@@ -35,6 +35,12 @@ public:
         m_acceptor.close();
     }
 
+    boost::asio::io_service& get_io_service()
+    {
+        return m_acceptor.get_io_service();
+    }
+
+
 private:
     void handle_accept(tcp_connection::pointer new_connection,
                        const boost::system::error_code& error,

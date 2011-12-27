@@ -42,6 +42,8 @@ public:
     typedef boost::function<void(boost::system::error_code)> write_handler;
     typedef boost::function<void(raw_buffer_t, boost::system::error_code)> read_handler;
 
+    typedef raw_buffer_t net_t;
+
     typedef boost::uint16_t port_t;
 
     static pointer connect(boost::asio::io_service& io_service, const std::string &to, port_t port)
@@ -103,7 +105,6 @@ public:
     }
 
     friend class tcp_acceptor;
-
 private:
     static pointer create(boost::asio::io_service& io_service)
     {

@@ -50,4 +50,5 @@ else:unix:!symbian: PRE_TARGETDEPS += $$OUT_PWD/../base/libbase.a
 
 HEADERS += \
     tcp_test.hpp \
-    serialization_test.hpp
+    serialization_test.hpp \
+    generic_connection_test.hpp
