@@ -7,6 +7,7 @@
 #include <string>
 
 #include <boost/bind.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/barrier.hpp>
 
@@ -64,6 +65,8 @@ BOOST_AUTO_TEST_CASE(tcp_test_case)
     using namespace tcp_test;
 
     boost::asio::io_service io_service;
+    boost::scoped_ptr<boost::asio::io_service::work> work(new boost::asio::io_service::work(io_service));
+    boost::thread t(boost::bind(&boost::asio::io_service::run,boost::ref(io_service)));
 
     detail::tcp_acceptor acceptor(io_service, 8585);
     acceptor.async_accept(new_one);
@@ -80,6 +83,8 @@ BOOST_AUTO_TEST_CASE(tcp_test_case)
         connection->async_write(msg,send_done);
     }
 
+    boost::this_thread::sleep(boost::posix_time::seconds(1));
+
     {
         std::string msg = "wirklich zu funktionieren";
         connection->async_write(msg,send_done);
@@ -90,12 +95,12 @@ BOOST_AUTO_TEST_CASE(tcp_test_case)
         connection->async_write(msg,send_done);
     }
 
+    boost::this_thread::sleep(boost::posix_time::seconds(2));
+
     {
         std::string msg = "quit";
         connection->async_write(msg,send_done);
     }
-
-    boost::thread t(boost::bind(&boost::asio::io_service::run,boost::ref(io_service)));
 
     barrier.wait();
 
@@ -106,6 +111,7 @@ BOOST_AUTO_TEST_CASE(tcp_test_case)
 
     std::cout << "closed\n";
 
+    work.reset();
     t.join();
 }
 

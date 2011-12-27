@@ -5,7 +5,7 @@
 
 #include "detail_generic_serialization.hpp"
 
-BOOST_AUTO_TEST_CASE(tcp_test_case)
+BOOST_AUTO_TEST_CASE(serialization_test_case)
 {
     int i = 42;
 

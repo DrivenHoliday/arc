@@ -52,7 +52,7 @@ public:
         tcp::resolver::query query(to, boost::lexical_cast<std::string>(port));
         tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
 
-        pointer result(new tcp_connection(io_service));
+        pointer result = tcp_connection::create(io_service);
 
         boost::asio::connect(result->socket(), endpoint_iterator);
 
@@ -69,13 +69,13 @@ public:
     {
         assert(boost::size(range) < std::numeric_limits<header_int_type>::max());
 
-        header_int_type header = boost::size(range);
+        const header_int_type header = boost::size(range);
 
         raw_buffer_t buffer(header_size + header);
 
         {
             typedef header_arr_type::value_type byte_type;
-            const byte_type * const p = reinterpret_cast<byte_type*>(&header);
+            const byte_type * const p = reinterpret_cast<const byte_type*>(&header);
             std::copy(p,p+sizeof(header),buffer.begin());
         }
 
@@ -98,6 +98,7 @@ public:
 
     void close()
     {
+        m_timer.cancel();
         m_socket.close();
     }
 
@@ -106,13 +107,33 @@ public:
 private:
     static pointer create(boost::asio::io_service& io_service)
     {
-        return pointer(new tcp_connection(io_service));
+        pointer result(new tcp_connection(io_service));
+        result->start_timer();
+        return result;
     }
 
     tcp_connection(boost::asio::io_service& io_service)
-        : m_socket(io_service)
+        : m_socket(io_service), m_timer(io_service,boost::posix_time::seconds(1))
     {
+
     }
+
+    void start_timer()
+    {
+        m_timer.async_wait(boost::bind(&tcp_connection::handle_timer,shared_from_this(),_1));
+    }
+
+    void handle_timer(const boost::system::error_code& error)
+    {
+        if(!error)
+        {
+            async_write(raw_buffer_t(),boost::bind(&tcp_connection::handle_ping_write,shared_from_this(),_1));
+            start_timer();
+        }
+    }
+
+    void handle_ping_write(const boost::system::error_code&)
+    { }
 
     void handle_header_read(const boost::system::error_code& error,
                      size_t /*bytes_transferred*/,
@@ -129,13 +150,20 @@ private:
             typedef header_arr_type::value_type byte_type;
             boost::range::copy(*header,reinterpret_cast<byte_type*>(&header_int));
 
-            boost::shared_ptr<raw_buffer_t> buffer(new raw_buffer_t(header_int));
-            boost::asio::async_read(m_socket,boost::asio::buffer(*buffer),
-                                    boost::bind(&tcp_connection::handle_read,shared_from_this(),
-                                                boost::asio::placeholders::error,
-                                                boost::asio::placeholders::bytes_transferred,
-                                                handler,
-                                                buffer));
+            if(header_int)
+            {
+                boost::shared_ptr<raw_buffer_t> buffer(new raw_buffer_t(header_int));
+                boost::asio::async_read(m_socket,boost::asio::buffer(*buffer),
+                                        boost::bind(&tcp_connection::handle_read,shared_from_this(),
+                                                    boost::asio::placeholders::error,
+                                                    boost::asio::placeholders::bytes_transferred,
+                                                    handler,
+                                                    buffer));
+            }
+            else
+            {
+                async_read(handler);
+            }
         }
     }
 
@@ -155,6 +183,7 @@ private:
     }
 
     boost::asio::ip::tcp::socket m_socket;
+    boost::asio::deadline_timer m_timer;
 };
 
 }
