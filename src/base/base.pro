@@ -21,7 +21,9 @@ HEADERS += \
     detail_tcp_acceptor.hpp \
     detail_raw_buffer.hpp \
     detail_generic_serialization.hpp \
-    detail_generic_connection.hpp
+    detail_generic_connection.hpp \
+    arc_detail_net_type.hpp \
+    arc_connection.hpp
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib

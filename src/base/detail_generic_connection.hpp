@@ -130,4 +130,6 @@ private:
     typename Traits::base_acceptor_t m_acceptor;
 };
 
+}
+
 #endif // DETAIL_GENERIC_CONNECTION_HPP

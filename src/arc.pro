@@ -2,7 +2,8 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     base_test \
-    base
+    base \
+    server
 
 
 

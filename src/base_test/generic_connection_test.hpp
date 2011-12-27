@@ -68,7 +68,7 @@ struct encrypted_trait
 
     static base_socket_t::net_t crypt_stream(const net_t &t)
     {
-        raw_buffer_t result(t.size());
+        detail::raw_buffer_t result(t.size());
         boost::range::transform(t,result.begin(),crypt);
         return result;
     }
@@ -196,7 +196,7 @@ BOOST_AUTO_TEST_CASE(generic_connection_test_case)
 
     work.reset();
     t.join();
-}}
+}
 
 
 #endif // GENERIC_CONNECTION_TEST_HPP
