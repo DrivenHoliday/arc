@@ -3,7 +3,8 @@ TEMPLATE = subdirs
 SUBDIRS += \
     base_test \
     base \
-    server
+    server \
+    console_client
 
 
 

@@ -14,7 +14,8 @@ INCLUDEPATH += /opt/local/include
 
 SOURCES += \
     detail_tcp_connection.cpp \
-    detail_tcp_acceptor.cpp
+    detail_tcp_acceptor.cpp \
+    utility.cpp
 
 HEADERS += \
     detail_tcp_connection.hpp \
@@ -23,7 +24,10 @@ HEADERS += \
     detail_generic_serialization.hpp \
     detail_generic_connection.hpp \
     arc_detail_net_type.hpp \
-    arc_connection.hpp
+    arc_connection.hpp \
+    arc_server.hpp \
+    arc_client.hpp \
+    utility.hpp
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib

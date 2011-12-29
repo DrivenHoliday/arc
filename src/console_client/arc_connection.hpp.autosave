@@ -1,0 +1,25 @@
+#ifndef ARC_CONNECTION_HPP
+#define ARC_CONNECTION_HPP
+
+#include "arc_connection.hpp"
+
+namespace arc {
+
+class connection
+{
+public:
+    typedef
+
+
+    static connect()
+
+private:
+    arc_connection()
+    {
+
+    }
+};
+
+}
+
+#endif // ARC_CLIENT_HPP
