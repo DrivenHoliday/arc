@@ -10,7 +10,6 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/config.hpp>
-#include <boost/function.hpp>
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/construct.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -21,6 +20,7 @@
 #include <boost/thread.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
+#include "arc_client.hpp"
 #include "arc_connection.hpp"
 #include "utility.hpp"
 

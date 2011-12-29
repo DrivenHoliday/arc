@@ -4,7 +4,8 @@ SUBDIRS += \
     base_test \
     base \
     server \
-    console_client
+    console_client \
+    client
 
 
 
