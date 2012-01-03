@@ -1,6 +1,8 @@
 #ifndef ARC_CLIENT_HPP
 #define ARC_CLIENT_HPP
 
+#include <cstring>
+
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
@@ -91,7 +93,8 @@ public:
                 ( arc::msg::login_request(nickname)
                 , boost::bind
                         ( client::login_request_sent
-                        , handler,connection
+                        , handler
+                        , connection
                         , _1 ) );
     }
 
@@ -114,6 +117,52 @@ public:
         pointer p = future.get();
 
         return p;
+    }
+
+    struct server_info
+    {
+        server_info(std::size_t num_clients)
+            : num_clients(num_clients)
+        { }
+
+        std::size_t num_clients;
+    };
+
+    typedef boost::function<void(server_info, const boost::system::error_code &error)> server_info_handler;
+
+    static void call_server_info_handler(server_info_handler handler, arc::detail::net_type msg, const boost::system::error_code &error)
+    {
+        handler(server_info(boost::get<arc::msg::info_response>(msg).num_clients),error);
+    }
+
+    static void server_info_written(arc::connection::pointer connection, server_info_handler handler, const boost::system::error_code &error)
+    {
+        if(error)
+        {
+            handler(server_info(0),error);
+        }
+        else
+        {
+            connection->async_read
+                    ( boost::bind
+                        ( client::call_server_info_handler
+                        , handler
+                        , _1
+                        , _2 ) );
+        }
+    }
+
+    static void get_server_info(boost::asio::io_service &io_service, const std::string &to, port_t port, server_info_handler handler)
+    {
+        arc::connection::pointer connection = arc::connection::connect(io_service,to,port);
+
+        connection->async_write
+                ( arc::msg::info_request()
+                , boost::bind
+                        ( client::server_info_written
+                        , connection
+                        , handler
+                        , _1 ) );
     }
 
 private:

@@ -16,9 +16,15 @@ class LoginDialog : public QDialog
 public:
     explicit LoginDialog(ServerListModel *model, QWidget *parent = 0);
     ~LoginDialog();
+
+private slots:
+    void nicknameChanged(QString);
+    void addServer();
+    void delServer();
     
 private:
     Ui::LoginDialog *ui;
+    ServerListModel *mModel;
 };
 
 #endif // LOGINDIALOG_H

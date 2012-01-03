@@ -12,14 +12,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     logindialog.cpp \
-    serverlistmodel.cpp
+    serverlistmodel.cpp \
+    newserverdialog.cpp
 
 HEADERS  += mainwindow.h \
     logindialog.h \
-    serverlistmodel.h
+    serverlistmodel.h \
+    newserverdialog.h
 
 FORMS    += mainwindow.ui \
-    logindialog.ui
+    logindialog.ui \
+    newserverdialog.ui
 
 INCLUDEPATH += /opt/local/include
 LIBS += -L/opt/local/lib
@@ -52,3 +55,6 @@ DEPENDPATH += $$PWD/../base
 win32:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../base/release/base.lib
 else:win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../base/debug/base.lib
 else:unix:!symbian: PRE_TARGETDEPS += $$OUT_PWD/../base/libbase.a
+
+RESOURCES += \
+    icons.qrc

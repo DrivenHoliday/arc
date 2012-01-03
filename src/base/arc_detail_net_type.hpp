@@ -1,6 +1,8 @@
 #ifndef ARC_DETAIL_NET_TYPE_HPP
 #define ARC_DETAIL_NET_TYPE_HPP
 
+#include <cstring>
+
 #include <set>
 #include <string>
 
@@ -113,6 +115,35 @@ struct nick_list
     list_t list;
 };
 
+struct info_request
+{
+    info_request()
+    { }
+
+    template<class Archive>
+    void serialize(Archive &, const unsigned int)
+    {
+    }
+};
+
+struct info_response
+{
+    info_response()
+    { }
+
+    info_response(std::size_t num_clients)
+        : num_clients(num_clients)
+    { }
+
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int)
+    {
+        ar & num_clients;
+    }
+
+    std::size_t num_clients;
+};
+
 }
 
 namespace detail {
@@ -120,7 +151,9 @@ namespace detail {
 typedef boost::variant< msg::login_request
                       , msg::text_msg
                       , msg::login_response
-                      , msg::nick_list> net_type;
+                      , msg::nick_list
+                      , msg::info_request
+                      , msg::info_response > net_type;
 
 } }
 

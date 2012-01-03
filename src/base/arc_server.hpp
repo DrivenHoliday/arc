@@ -97,20 +97,37 @@ private:
         accept();
     }
 
+    void info_response_written(const boost::system::error_code &error)
+    {
+
+    }
+
     void handle_new_connection_login(arc::connection::pointer connection, arc::detail::net_type t, const boost::system::error_code &error)
     {
-        connection_set::value_type conn;
-        conn.uid = m_generate_random_uid();
-        conn.nickname = boost::get<arc::msg::login_request>(t).nickname;
-        conn.connection = connection;
+        if(arc::msg::login_request *request = boost::get<arc::msg::login_request>(&t))
+        {
+            connection_set::value_type conn;
+            conn.uid = m_generate_random_uid();
+            conn.nickname = request->nickname;
+            conn.connection = connection;
 
-        connection->async_write
-                ( arc::msg::login_response(conn.uid)
-                , boost::bind
-                    ( &server::new_connetion_response_written
-                    , this
-                    , conn
-                    , _1 ) );
+            connection->async_write
+                    ( arc::msg::login_response(conn.uid)
+                    , boost::bind
+                        ( &server::new_connetion_response_written
+                        , this
+                        , conn
+                        , _1 ) );
+        }
+        else if(arc::msg::info_request *request = boost::get<arc::msg::info_request>(&t))
+        {
+            connection->async_write
+                    ( arc::msg::info_response(m_connections.size())
+                    , boost::bind
+                        ( &server::info_response_written
+                        , this
+                        , _1 ) );
+        }
     }
 
     arc::msg::nick_list::list_t generate_nick_list()

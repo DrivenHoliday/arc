@@ -1,6 +1,11 @@
 #ifndef SERVERLISTMODEL_H
 #define SERVERLISTMODEL_H
 
+#include <string>
+#include <vector>
+
+#include "arc_client.hpp"
+
 #include <QAbstractListModel>
 
 class ServerListModel : public QAbstractListModel
@@ -23,12 +28,60 @@ public:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 
 //    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
+    void sort();
 
     Qt::DropActions supportedDropActions() const;
 
-signals:
-    
-public slots:
+    void load(std::istream &istream);
+    void save(std::ostream &ostream);
+
+    void addServer(const std::string &server, arc::client::port_t port);
+
+private:
+    struct server_list_entry
+    {
+        enum status_e
+        {
+            online = 0,
+            unknown = 1,
+            offline = 2
+        };
+
+        server_list_entry()
+            : status(unknown), port(0)
+        { }
+
+        server_list_entry(const std::string &name, arc::client::port_t port)
+            : status(unknown), name(name), port(port)
+        { }
+
+        std::string name;
+        arc::client::port_t port;
+        status_e status;
+
+        bool operator<(const server_list_entry &other) const
+        {
+            if(status == other.status)
+                return name < other.name;
+            else
+                return status < other.status;
+        }
+
+        bool operator==(const server_list_entry &other) const
+        {
+            return status == other.status && name == other.name && port == other.port;
+        }
+
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int)
+        {
+            ar & BOOST_SERIALIZATION_NVP(name);
+            ar & BOOST_SERIALIZATION_NVP(port);
+        }
+    };
+
+    typedef std::vector<server_list_entry> server_list_vec;
+    server_list_vec m_server_list;
     
 };
 

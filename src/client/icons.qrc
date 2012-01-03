@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/dots">
+        <file>gray_dot.svg</file>
+        <file>green_dot.svg</file>
+        <file>red_dot.svg</file>
+    </qresource>
+</RCC>
